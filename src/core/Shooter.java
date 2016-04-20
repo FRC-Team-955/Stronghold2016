@@ -92,7 +92,7 @@ public class Shooter{
 		solOne = core.shooterSol;
 		speedLeft = 0;
 		speedRight = 0;
-		usingVision = false;
+		usingVision = true;
 		this.dash = dash;
 		this.vision = vision;
 		this.robotCore = core;
@@ -131,8 +131,21 @@ public class Shooter{
 	}
 	
 	public void updateShooterWheels() {
-		leftPID.updateConstants(dash.getPLeft(), ShooterConfig.kILeft, ShooterConfig.kDLeft);
-		rightPID.updateConstants(dash.getPRight(), ShooterConfig.kIRight, ShooterConfig.kDRight);
+		if(Util.withinThreshold(leftRate, shootSpeed, 0.2)); {
+			leftPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());			
+		}
+		
+		if(Util.withinThreshold(rightRate, shootSpeed, 0.2)); {
+			rightPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());	
+		}
+		
+		if(!Util.withinThreshold(leftRate, shootSpeed, 0.2)); {
+			leftPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
+		}
+		
+		if(!Util.withinThreshold(rightRate, shootSpeed, 0.2)); {
+			rightPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
+		}
 		
 		if(!stopping) {
 //			if(isFirstMotors) {
@@ -199,7 +212,14 @@ public class Shooter{
 			
 			if(resetTimer.get() > 0.5 && resettingShot) {
 				resettingShot = false;
-				shoot();
+//				shoot();
+				wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.32)));
+				if(wantAng-robotCore.navX.getAngle() >= 0) {
+					adjustWithLeft = true;
+				}
+				else if(wantAng-robotCore.navX.getAngle() < 0) {
+					adjustWithLeft = false;
+				}
 			}
 			
 			if(closeMode) {	
@@ -228,7 +248,7 @@ public class Shooter{
 				driveSpeed = 0;				
 			}
 			
-			if(Math.abs(Math.abs(robotCore.navX.getAngle())) < 1){
+			if(Math.abs(Math.abs(wantAng)-Math.abs(robotCore.navX.getAngle())) < 1){
 				driveSpeed = 0;
 			}
 			
@@ -266,8 +286,10 @@ public class Shooter{
 	 * Run periodically to control shooting process
 	 */
 	public void update(){
-		updateLeftRate();
-		updateRightRate();
+//		updateLeftRate();
+//		updateRightRate();
+		leftRate = leftMotorEnc.getRate();
+		rightRate = rightMotorEnc.getRate();
 		dash.putBoolean("isMotorsFast", isMotorsFastEnough(shootSpeed));
 		wantGoal = vision.vs.getHighestArea();
 		updateShooterDash();
@@ -296,7 +318,7 @@ public class Shooter{
 			}
 		}
 		
-		else {
+		else if (!doneShooting){
 			isFirstTimer = true;
 			timer.stop();
 			timer.reset();
@@ -339,11 +361,7 @@ public class Shooter{
 		isFirstMotors = true;
 		isFirstTimer = true;
 		isFirst = true;
-		leftPID.reset();
-		leftPID.start();
-		rightPID.reset();
-		rightPID.start();
-		wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.52)));
+		wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.32)));
 		if(wantAng-robotCore.navX.getAngle() >= 0) {
 			adjustWithLeft = true;
 		}

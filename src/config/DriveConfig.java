@@ -15,7 +15,7 @@ public class DriveConfig {
 	public static final int rightC2Chn = 4;
 	
 	public static final boolean leftC1IsFliped = false;
-	public static final boolean leftC2IsFlipped = false;
+	public static final boolean leftC2IsFlipped = true;
 	
 	public static final boolean rightC1IsFlipped = true;
 	public static final boolean rightC2IsFlipped = true;

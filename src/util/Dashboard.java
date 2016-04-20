@@ -50,6 +50,12 @@ public class Dashboard {
 		SmartDashboard.putNumber("shooterSpeed", ShooterConfig.constantSpeed);
 		SmartDashboard.putNumber("kPLeft", ShooterConfig.kPLeft);
 		SmartDashboard.putNumber("kPRight", ShooterConfig.kPRight);
+
+		SmartDashboard.putNumber("kILeft", ShooterConfig.kILeft);
+		SmartDashboard.putNumber("kIRight", ShooterConfig.kIRight);
+
+		SmartDashboard.putNumber("kDLeft", ShooterConfig.kDLeft);
+		SmartDashboard.putNumber("kDRight", ShooterConfig.kDRight);
 	}
 	
 	/**
@@ -150,6 +156,22 @@ public class Dashboard {
 	
 	public double getPRight() {
 		return SmartDashboard.getNumber("kPRight");
+	}
+	
+	public double getILeft() {
+		return SmartDashboard.getNumber("kILeft");
+	}
+	
+	public double getIRight() {
+		return SmartDashboard.getNumber("kIRight");
+	}
+	
+	public double getDLeft() {
+		return SmartDashboard.getNumber("kDLeft");
+	}
+	
+	public double getDRight() {
+		return SmartDashboard.getNumber("kDRight");
 	}
 	
 	public void putDouble(String key, double num) {

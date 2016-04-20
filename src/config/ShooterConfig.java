@@ -15,13 +15,13 @@ public class ShooterConfig {
 	public static final double waitTime = 0.5;
 	public static final double waitTimeStop = 0.5;
 	
-	public static final double kPLeft = 0.009; //0.018
-	public static final double kILeft = 0.005844;
-	public static final double kDLeft = 0.003465;
+	public static final double kPLeft = 0.005; //0.018
+	public static final double kILeft = 0.0;
+	public static final double kDLeft = 0.0;
 	
-	public static final double kPRight = 0.009;  //0.018
-	public static final double kIRight = 0.005844;
-	public static final double kDRight = 0.003465;
+	public static final double kPRight = 0.1;  //0.018
+	public static final double kIRight = 0.03;
+	public static final double kDRight = 0.022;
 
 	public static final double kPDrive = 0.062;
 	public static final double kIDrive= 0;
@@ -30,13 +30,13 @@ public class ShooterConfig {
 	public static final double kPDriveClose = 0.07;
 	public static final double kIDriveClose = 0;
 	public static final double kDDriveClose = 0;
-	
+		
 	public static final double rotationTolerance = 7;
-	public static final double velocitySettleTime = 0.25;
+	public static final double velocitySettleTime = 0;
 	public static final double distanceSpeedConstant = .009;
 	
-	public static final double constantSpeed = 0.56;
-	public static final double motorSpeedTolerance = .012;
+	public static final double constantSpeed = 0.51;
+	public static final double motorSpeedTolerance = .006;
 	
 	public static final int maxDistanceVision = 100;
 	
