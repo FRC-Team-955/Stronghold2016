@@ -17,6 +17,7 @@ import vision.VisionCore;
 public class Auto {
 	public Interpreter interpreter;
 	
+	private Shooter shooter;
 	/**
 	 * 
 	 * @param robotCore
@@ -27,6 +28,7 @@ public class Auto {
 	 */
 	public Auto(RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Dashboard dashboard, VisionCore vision){
 		interpreter = new Interpreter(drive, robotCore, intake, dashboard, shooter, vision);
+		this.shooter = shooter;
 	}
 	
 	/**
@@ -34,6 +36,11 @@ public class Auto {
 	 */
 	public void run(){
 		interpreter.update();
+	}
+	
+	public void init() {
+		interpreter.init();
+		shooter.clampBall();
 	}
 }
 

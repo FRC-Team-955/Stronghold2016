@@ -47,6 +47,7 @@ public class Dashboard {
 		leftRightChooser.addObject("Right", new ChooserType(1));
 		SmartDashboard.putData("Left Right", leftRightChooser);
 		
+		SmartDashboard.putNumber("angleOffset", VisionConfig.angleOffset);
 		SmartDashboard.putNumber("shooterSpeed", ShooterConfig.constantSpeed);
 		SmartDashboard.putNumber("kPLeft", ShooterConfig.kPLeft);
 		SmartDashboard.putNumber("kPRight", ShooterConfig.kPRight);
@@ -144,6 +145,10 @@ public class Dashboard {
 			default:
 				return false;
 		}
+	}
+	
+	public double getNumber(String key) {
+		return SmartDashboard.getNumber(key);
 	}
 	
 	public double getSpeed() {

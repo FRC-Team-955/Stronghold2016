@@ -58,11 +58,11 @@ public class Teleop {
 		drive.move(rTheta[0], rTheta[1]);	
 
 		if(robotCore.joy.getDpadUp()) {
-			drive.toLowGear();
+			drive.setReverseMode(true);
 		}
 		
 		if(robotCore.joy.getDpadDown()) {
-			drive.toHighGear();
+			drive.setReverseMode(false);
 		}
 //		System.out.println(rTheta[0] + "\t" + (rTheta[1] * 180/Math.PI));
 	}
@@ -75,6 +75,7 @@ public class Teleop {
 //		System.out.println("hello");
 		if(robotCore.joy.getButton(JoyConfig.intakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.pickupBall();
+			shooter.releaseBall();
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.cancelIntakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
@@ -82,11 +83,11 @@ public class Teleop {
 		}
 		
 		if(robotCore.joy.getRawButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setArmSpeed(1);
+			intake.arm.setArmSpeed(-1);
 		}
 		
 		if(robotCore.joy.getRawButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setArmSpeed(-1);
+			intake.arm.setArmSpeed(1);
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.armStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
@@ -114,11 +115,19 @@ public class Teleop {
 		}
 		
 		if(robotCore.joy.getDpadLeft()) {
-			intake.arm.setPortcullisMode(false);
+			shooter.releaseBall();
 		}
 		
 		if(robotCore.joy.getDpadRight()) {
-			intake.arm.setPortcullisMode(true);
+			shooter.clampBall();
+		}
+		
+		if(robotCore.joy.getButton(9)) {
+			intake.arm.setPos(2);
+		}
+		
+		if(robotCore.joy.getButton(10)) {
+			intake.arm.resetArmEnc();
 		}
 	}
 	
@@ -171,12 +180,12 @@ public class Teleop {
 	private void joyClimber() {
 		climber.update();
 		
-		if(robotCore.joy.getButton(JoyConfig.climbButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton))  {
-			climber.climb();
-		}
+//		if(robotCore.joy.getButton(JoyConfig.climbButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton))  {
+//			climber.climb();
+//		}
 		
-		if(robotCore.joy.getButton(JoyConfig.climbStepButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			climber.advanceStep();
-		}
+//		if(robotCore.joy.getButton(JoyConfig.climbStepButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+//			climber.advanceStep();
+//		}
 	}
 }

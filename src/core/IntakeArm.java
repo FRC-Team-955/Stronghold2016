@@ -18,7 +18,8 @@ public class IntakeArm {
 	private double position [] = 
 	{
 		IntakeArmConfig.pickupPosition,
-		IntakeArmConfig.homePosition
+		IntakeArmConfig.homePosition,
+		IntakeArmConfig.blockPosition
 	};
 	private CIM armMotor = new CIM(IntakeArmConfig.armMotorChn, IntakeArmConfig.armMotorFlipped);
 	private int posIndex = 1;
@@ -27,6 +28,7 @@ public class IntakeArm {
 	private double pidOutput = 0;
 	private boolean portcullis = false;
 	private Dashboard dash;
+	private double encoderOffset = 0;
 	
 	
 	/**
@@ -63,8 +65,8 @@ public class IntakeArm {
 	 * Runs periodically to update PID and move arm to wantPos
 	 */
 	public void update() {
-		dash.putDouble("armEnc", armEnc.getDistance());
-		currPos = armEnc.getDistance();
+		dash.putDouble("armEnc", (armEnc.getDistance() - encoderOffset));
+		currPos = (armEnc.getDistance() - encoderOffset);
 		if(wantPos - currPos <= 0) {
 			pidUp.update(currPos, wantPos);
 			pidOutput = pidUp.getOutput();
@@ -72,7 +74,7 @@ public class IntakeArm {
 		else if(wantPos - currPos > 0) {
 			pidDown.update(currPos, wantPos);
 			pidOutput = pidDown.getOutput();
-		}			
+		}	
 
 		setArmSpeed(Util.limit(pidOutput, IntakeArmConfig.minArmSpeed, IntakeArmConfig.maxArmSpeed));
 		
@@ -113,11 +115,19 @@ public class IntakeArm {
 			posIndex = 0;
 		}
 		
+		else if(posIndex == 2) {
+			posIndex = 0;
+		}
+		
 		wantPos = position[posIndex];
 	}
 	
 	public void setPortcullisMode(boolean mode) {
 		portcullis = mode;
+	}
+	
+	public void resetArmEnc() {
+		encoderOffset = armEnc.getDistance() - 10.5;
 	}
 	
 	

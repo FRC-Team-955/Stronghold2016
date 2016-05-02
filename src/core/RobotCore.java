@@ -23,6 +23,7 @@ public class RobotCore {
 	public Encoder shooterLeftEnc = new Encoder(ShooterConfig.ChnALeftEnc, ShooterConfig.ChnBLeftEnc);
 	public Encoder shooterRightEnc = new Encoder(ShooterConfig.ChnARightEnc, ShooterConfig.ChnBRightEnc);
 	public DoubleSolenoid shooterSol = new DoubleSolenoid(ShooterConfig.ChnSolA, ShooterConfig.ChnSolB);
+	public DoubleSolenoid ballHolder = new DoubleSolenoid(ShooterConfig.ballHolderChnA, ShooterConfig.ballHolderChnB);
 	public PowerDistributionPanel pdp = new PowerDistributionPanel();
 //	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
 //	public Encoder climberEncCIM = new Encoder(ClimberConfig.ChnAEncCIM, ClimberConfig.ChnBEncCIM);

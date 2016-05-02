@@ -49,7 +49,7 @@ public class VisionStruct {
 		}
 		
 		for(int i = 1; i < goals.length; i++) {
-			if(goals[i].area - goals[i-1].area < 200){
+			if(goals[i].area - goals[i-1].area < 200 && goals[i].area > 0){
 				goalNumber = i-1;
 			}
 		}

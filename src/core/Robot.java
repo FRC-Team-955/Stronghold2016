@@ -47,7 +47,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousInit() {
-    	auto.interpreter.interpInit();
+    	auto.init();
 //    	vision.initThread();
     }
     /**

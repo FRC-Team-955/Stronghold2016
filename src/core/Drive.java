@@ -26,6 +26,12 @@ public class Drive {
 	public DoubleSolenoid shiftingSol = new DoubleSolenoid(DriveConfig.shiftSolPortA, DriveConfig.shiftSolPortB);
 //	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
 	boolean lowGear = true;
+	boolean reverseMode = false;
+	
+	double xPos;
+	double yPos;
+	double x;
+	double y;
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
@@ -46,11 +52,22 @@ public class Drive {
 //			theta+=DriveConfig.driveStraightOffset;
 //		}
 		
-		double xPos = r*Math.cos(theta);
-		double yPos = r*Math.sin(theta);
+		if(reverseMode) {
+			xPos = r*Math.cos(theta);
+			yPos = -r*Math.sin(theta);
+			
+			x = xPos * Math.abs(xPos);
+			y = yPos * Math.abs(yPos);
+		}
 		
-		double x = xPos * Math.abs(xPos);
-		double y = yPos * Math.abs(yPos);
+		else {
+			xPos = r*Math.cos(theta);
+			yPos = r*Math.sin(theta);
+			
+			x = xPos * Math.abs(xPos);
+			y = yPos * Math.abs(yPos);
+		}
+		
 		
 		double left = y + x;
 		double right = y - x;
@@ -97,5 +114,9 @@ public class Drive {
 	public void toHighGear() {
 		shiftingSol.set(DoubleSolenoid.Value.kForward);
 		lowGear = false;
+	}
+	
+	public void setReverseMode(boolean mode) {
+		reverseMode = mode;
 	}
 }

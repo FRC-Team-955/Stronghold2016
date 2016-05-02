@@ -41,6 +41,7 @@ public class Interpreter {
 	private boolean isFirstSpin = true;
 	private boolean isFirstShoot = true;
 	private int wantGoal = 0;
+	private double zeroAngle = 0;
 	private Timer shootTimer = new Timer();
 	
 	/**
@@ -63,7 +64,9 @@ public class Interpreter {
 	/**
 	 * Run at auto init to get and parse script file 
 	 */
-	public void interpInit() {
+	public void init() {
+		shooter.clampBall();
+		zeroAngle = robotCore.navX.getRoll();
 		shootTimer.start();
 		fileNameOne = dashboard.getFileNameOne();
 		commandsOne = Parser.parse(fileNameOne);
@@ -103,12 +106,12 @@ public class Interpreter {
 	}
 	
 	public void waitPitch() {
-		if(Math.abs(robotCore.navX.getRoll()+3) < InterpConfig.pitchThreshold) {
+		if(Math.abs(robotCore.navX.getRoll()-zeroAngle) < InterpConfig.pitchThreshold) {
 			if(isFirst) {
 				timer.start();
 				isFirst = false;
 			}
-			if(timer.get() > 0.25) {
+			if(timer.get() > 0.2) {
 				next();				
 			}
 		}
@@ -120,7 +123,7 @@ public class Interpreter {
 	}
 	
 	public void waitPitchThreshold(double threshold) {
-		if(Math.abs(robotCore.navX.getRoll()+2.3) < threshold) {
+		if(Math.abs(robotCore.navX.getRoll() - zeroAngle) < threshold) {
 			next();
 		}
 		
