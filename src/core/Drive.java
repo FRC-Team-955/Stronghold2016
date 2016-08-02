@@ -72,8 +72,8 @@ public class Drive {
 		double left = y + x;
 		double right = y - x;
 //		System.out.println("left : " + left + "\tright : " + right);
-        leftCimGroup.set(left);
-        rightCimGroup.set(right);
+        leftCimGroup.set(left* .7);
+        rightCimGroup.set(right * .7);
         
 //        System.out.println("Drive Encoder Left: " + encLeft.getDistance() + "\tDrive Encoder Right: " + encRight.getDistance());
 	}

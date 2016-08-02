@@ -95,7 +95,7 @@ public class Shooter{
 		ballHolder = core.ballHolder;
 		speedLeft = 0;
 		speedRight = 0;
-		usingVision = true;
+		usingVision = false;
 		this.dash = dash;
 		this.vision = vision;
 		this.robotCore = core;

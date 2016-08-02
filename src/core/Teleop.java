@@ -43,9 +43,9 @@ public class Teleop {
 	public void run() {
 		robotCore.joy.update();
         dashboard.update();
-        vision.update();
+//        vision.update();
 		joyDrive();
-		joyIntake();
+//		joyIntake();
 		joyShooter();
 //		joyClimber();
 	}
