@@ -11,6 +11,13 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	RobotCore robotCore = new RobotCore();
+	Drive drive = new Drive(robotCore); 
+	Teleop teleop = new Teleop(robotCore, drive);
+	Interpreter interp = new Interpreter(drive);
+	Auto auto = new Auto(robotCore, drive, interp);
+	
+	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -19,18 +26,21 @@ public class Robot extends IterativeRobot {
 
     }
 
+    public void autonomousInit() {
+    	interp.interpInit();
+    }
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-
+    	auto.run();
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
+        teleop.run();
     }
     
     /**
