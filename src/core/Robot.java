@@ -1,7 +1,17 @@
 
 package core;
 
+import util.Dashboard;
+import vision.VisionCore;
+
+import java.net.ServerSocket;
+
+import auto.Auto;
+import config.VisionConfig;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables2.type.NumberArray;
+import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -12,10 +22,20 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot {
 	RobotCore robotCore = new RobotCore();
+	
 	Drive drive = new Drive(robotCore); 
-	Teleop teleop = new Teleop(robotCore, drive);
-	Interpreter interp = new Interpreter(drive);
-	Auto auto = new Auto(robotCore, drive, interp);
+	
+	VisionCore vision = new VisionCore(robotCore);
+	Dashboard dashboard = new Dashboard(vision, robotCore);
+	IntakeArm arm = new IntakeArm(robotCore, dashboard);
+	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
+	Intake intake = new Intake(arm, roller);
+	Climber climber = new Climber(robotCore);
+	Shooter shooter = new Shooter(robotCore, drive, vision, dashboard, intake);
+	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber, dashboard, vision);
+	Test test = new Test(drive, intake, shooter);
+	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard, vision);
+	int value = 0;
 	
 	
     /**
@@ -23,11 +43,12 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-
+    	
     }
 
     public void autonomousInit() {
-    	interp.interpInit();
+    	auto.init();
+//    	vision.initThread();
     }
     /**
      * This function is called periodically during autonomous
@@ -43,11 +64,15 @@ public class Robot extends IterativeRobot {
         teleop.run();
     }
     
-    /**
-     * This function is called periodically during test mode
-     */
-    public void testPeriodic() {
-    
+    public void teleopInit() {
+//    	vision.socket.connectServer();
+//    	vision.initThread();
     }
     
+    /**
+     * This function is cSalled periodically during test mode
+     */
+    public void testPeriodic() {
+    	test.run();
+    }
 }

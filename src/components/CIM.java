@@ -1,5 +1,6 @@
 package components;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Talon;
 import config.CimConfig;
 
@@ -8,18 +9,23 @@ import config.CimConfig;
  * @author Trevor
  *
  */
-public class Cim extends Talon {
+public class CIM extends CANTalon {
 	boolean isFlipped;
 	
 	/**
 	 * 
 	 * @param channel
+	 * @param isFlipped
 	 */
-	public Cim (int channel, boolean isFlipped) {
+	public CIM (int channel, boolean isFlipped) {
 		super(channel);
 		this.isFlipped = isFlipped;
 	}
 	
+	/**
+	 * Sets the CIM to a specified speed, using isFlipped boolean
+	 * @param speed
+	 */
 	public void set(double speed){
 		if(isFlipped)
 			super.set(-speed);
@@ -29,8 +35,10 @@ public class Cim extends Talon {
 			
 	}
 	
-	public double get(){
-		
+	/**
+	 * Returns the value the talon was set to
+	 */
+	public double get(){	
 		if(isFlipped){
 			return (-super.get());
 		}
@@ -38,6 +46,10 @@ public class Cim extends Talon {
 		return super.get();
 	}
 	
+	/**
+	 * Ramps the motors to the specified speed
+	 * @param wantSpeed
+	 */
 	public void ramp(double wantSpeed){
 		if(Math.abs(wantSpeed - get()) > CimConfig.rampRate){
 			
@@ -46,6 +58,22 @@ public class Cim extends Talon {
 			
 			else
 				set(get() - CimConfig.rampRate);
+			
+		}
+		
+		else {
+			set(wantSpeed);
+		}
+	}
+	
+	public void ramp(double wantSpeed, double rampRate){
+		if(Math.abs(wantSpeed - get()) > rampRate){
+			
+			if(wantSpeed > get())
+				set(get() +  rampRate);
+			
+			else
+				set(get() - rampRate);
 			
 		}
 		

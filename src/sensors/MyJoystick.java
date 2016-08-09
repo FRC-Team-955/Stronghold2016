@@ -47,9 +47,11 @@ public class MyJoystick extends Joystick {
 	 * @return magnitude and angle of joystick
 	 */
 	public double[] getRTheta() {
-		double x = (this.getRawRightX())*(-0.75);
+		double x = this.getRawRightX()*-1;
 		double y = this.getRawLeftY();
-
+		
+//		System.out.println("Right X: " + x + "\tLeftY: " + y);
+		
 		double r = Math.sqrt((x * x) + (y * y));
 		double theta = Math.atan2(y, x);
 
@@ -64,13 +66,11 @@ public class MyJoystick extends Joystick {
 	/**
 	 * Gives button value
 	 * 
-	 * @param button
-	 *            the button number on the controller
+	 * @param button the button number on the controller
 	 * @return button value
 	 */
 	public boolean getButton(int button) {
-		return buttonState[button
-		                   - 1];
+		return buttonState[button- 1];
 	}
 
 	/**
@@ -108,4 +108,32 @@ public class MyJoystick extends Joystick {
 	public double getRawRightY() {
 		return super.getRawAxis(JoyConfig.chnRightY);
 	}
+	
+	public boolean getDpadUp() {
+    	return super.getPOV(0) == 0;
+    }
+    
+    /**
+     * Checks if the dpad is pressed in the right direction 
+     * @return is the dpad is pressed
+     */
+    public boolean getDpadRight() {
+    	return super.getPOV(0) == 90;
+    }
+
+    /**
+     * Checks if the dpad is pressed in the down direction 
+     * @return is the dpad is pressed
+     */
+    public boolean getDpadDown(){
+    	return super.getPOV(0) == 180;
+    }
+    
+    /**
+     * Checks if the dpad is pressed in the left direction 
+     * @return is the dpad is pressed
+     */
+    public boolean getDpadLeft(){
+    	return super.getPOV(0) == 270;
+    }
 }
