@@ -20,7 +20,7 @@ public class IntakeArmConfig {
 	
 	// Motor config
 	public static final boolean armMotorFlipped = true;
-	public static final int armMotorChn = 7;
+	public static final int armMotorChn = 8;
 	public static final double minArmSpeed = -0.7;
 	public static final double maxArmSpeed = 0.7;
 	
