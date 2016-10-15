@@ -75,7 +75,7 @@ public class IntakeArm {
 			pidDown.update(currPos, wantPos);
 			pidOutput = pidDown.getOutput();
 		}	
-
+		System.out.println("Arm EncodeR: " + armEnc.getDistance());
 		setArmSpeed(Util.limit(pidOutput, IntakeArmConfig.minArmSpeed, IntakeArmConfig.maxArmSpeed));
 		
 	}

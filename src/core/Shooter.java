@@ -289,6 +289,7 @@ public class Shooter{
 	 * Run periodically to control shooting process
 	 */
 	public void update(){
+		System.out.println("LEFT: " + leftMotorEnc.getRate() + "\nRIGHT: " + rightMotorEnc.getRate());
 		updateLeftRateFilter();
 		updateRightRateFilter();
 //		leftRate = leftMotorEnc.getRate();

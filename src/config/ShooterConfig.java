@@ -4,8 +4,8 @@ public class ShooterConfig {
 
 	public static final int ChnALeftEnc = 7; //7
 	public static final int ChnBLeftEnc = 6; //6
-	public static final int ChnBRightEnc = 2;
-	public static final int ChnARightEnc = 3;
+	public static final int ChnBRightEnc = 3;
+	public static final int ChnARightEnc = 2;
 	public static final int ChnSolA = 0;
 	public static final int ChnSolB = 1;
 	public static final int ballHolderChnA = 3;
