@@ -2,11 +2,9 @@ package vision;
 
 import java.rmi.server.ServerCloneException;
 
-import config.ShooterConfig;
+import config.DriveConfig;
 import config.VisionConfig;
 import core.RobotCore;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 import util.PID;
 
 public class VisionCore {
@@ -14,7 +12,7 @@ public class VisionCore {
 	public VisionStruct vs = new VisionStruct();
 	public SocketCore socket = new SocketCore();
 	
-	PID turnPID = new PID(ShooterConfig.kPDrive, ShooterConfig.kIDrive, ShooterConfig.kDDrive);
+	PID turnPID = new PID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
 
 	public VisionCore(RobotCore core) {	
 		new Thread(socket).start();		

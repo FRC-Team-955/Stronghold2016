@@ -5,6 +5,7 @@ import config.DriveConfig;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import util.PID;
 import util.Util;
 
@@ -32,6 +33,16 @@ public class Drive {
 	double yPos;
 	double x;
 	double y;
+	
+	// Turning
+	private boolean isFirst = true;
+	private boolean isFirstTimer = true;
+	private double angChange = 0;
+	private Timer timer = new Timer();
+	private double prevAng = 0;
+	
+	// Driving straight PID
+	private boolean isFirstDrive = true;
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
@@ -118,5 +129,74 @@ public class Drive {
 	
 	public void setReverseMode(boolean mode) {
 		reverseMode = mode;
+	}
+	
+	public boolean driveDistance(double velocity, double distance) {
+		if(isFirstDrive) {
+			robotCore.driveEncLeft.reset();
+			isFirstDrive = false;
+		} 
+		double speed = velocity * DriveConfig.kPDrive * (distance - robotCore.driveEncLeft.get());
+		set(speed, speed);
+		
+		if(robotCore.driveEncLeft.get() > distance) {
+			isFirstDrive = true;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean turnStep(double velocity, double turnAng) {
+//		turnAng*=-1;
+		double currAng = robotCore.navX.getAngle();
+		double error = turnAng+angChange;
+		double kP = 0.015;
+		double angVelocity = kP*error;
+		
+		if(angVelocity > 1) 
+			angVelocity = 1;
+		else if(angVelocity < -1)
+			angVelocity = -1;
+		
+		angVelocity *= velocity;
+		set(angVelocity, -angVelocity);
+		
+		if(isFirst){
+			prevAng = robotCore.navX.getAngle();
+			isFirst = false;
+			prevAng = currAng;
+			angChange = 0;
+		}
+		
+		if (Math.abs(prevAng - currAng) > DriveConfig.angChangeThreshold){
+			if(prevAng > 0)
+				angChange += ((currAng - prevAng) + 360);	
+			else
+				angChange += -((currAng - prevAng) - 360);	
+		}
+		
+		else {
+			angChange += (currAng - prevAng);	
+		}
+		
+		if(Math.abs(angVelocity) < DriveConfig.notMovingThreshold) {
+			if(isFirstTimer) {
+				timer.start();
+				isFirstTimer = false;
+			}
+			
+			if(timer.get() > DriveConfig.turnNextTime) {
+				if(Math.abs(angVelocity) < DriveConfig.notMovingThreshold){
+					isFirst = true;
+					isFirstTimer = true;
+					return true;
+				}
+				timer.reset();
+				timer.stop();
+			}
+		}
+		
+		prevAng = currAng;
+		return false;
 	}
 }

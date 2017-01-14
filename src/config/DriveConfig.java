@@ -36,4 +36,12 @@ public class DriveConfig {
 	public static final double encLeftDisPerPulse = 0.01133;
 	
 	public static final double driveStraightOffset = 0.18;
+	
+	public static final double kPDrive = 0.062;
+	public static final double kIDrive= 0;
+	public static final double kDDrive = 0;
+	
+	public static final double angChangeThreshold = 300;
+	public static final double notMovingThreshold = 0.3;
+	public static final double turnNextTime = 0.5;
 }
