@@ -7,8 +7,8 @@ package config;
  */
 public class DriveConfig {
 	// Channels for left talons
-	public static final int leftC1Chn = 7;
-	public static final int leftC2Chn = 5;
+	public static final int leftC1Chn = 5;
+	public static final int leftC2Chn = 6;
 	
 	// Channels for right talons
 	public static final int rightC1Chn = 3;
