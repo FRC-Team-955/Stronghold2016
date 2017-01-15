@@ -24,7 +24,6 @@ public class Drive {
 	private Encoder encRight;
 	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
-	public DoubleSolenoid shiftingSol = new DoubleSolenoid(DriveConfig.shiftSolPortA, DriveConfig.shiftSolPortB);
 //	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
 	boolean lowGear = true;
 	boolean reverseMode = false;
@@ -48,7 +47,6 @@ public class Drive {
 		robotCore = core;
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
-		shiftingSol.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
@@ -115,16 +113,6 @@ public class Drive {
 	public void setNoRamp(double left, double right) {
 		leftCimGroup.setNoRamp(left);
 		rightCimGroup.setNoRamp(right);
-	}
-	
-	public void toLowGear() {
-		shiftingSol.set(DoubleSolenoid.Value.kReverse);
-		lowGear = true;
-	}
-	
-	public void toHighGear() {
-		shiftingSol.set(DoubleSolenoid.Value.kForward);
-		lowGear = false;
 	}
 	
 	public void setReverseMode(boolean mode) {

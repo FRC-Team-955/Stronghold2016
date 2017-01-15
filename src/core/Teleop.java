@@ -48,7 +48,8 @@ public class Teleop {
 	private void joyDrive() {
 		visionDriving.driveToGear();
 		double[] rTheta = robotCore.joy.getRTheta();
-		drive.move(rTheta[0], rTheta[1]);	
+		drive.move(rTheta[0], rTheta[1]);
+		dashboard.putDouble("leftEnc", robotCore.driveEncLeft.getDistance());
 
 		if(robotCore.joy.getDpadUp()) {
 			drive.setReverseMode(true);
@@ -61,6 +62,10 @@ public class Teleop {
 		if(robotCore.joy.getButton(1)) {
 			visionDriving.startDrivingGear();
 		}
+		
+		drive.driveDistance(1, 20);
+		//drive.turnStep(1, 180);
+		
 //		System.out.println(rTheta[0] + "\t" + (rTheta[1] * 180/Math.PI));
 	}
 }
