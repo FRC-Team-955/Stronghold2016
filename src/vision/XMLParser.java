@@ -22,7 +22,7 @@ public class XMLParser {
 			Document doc = stringToDoc(xml);
 			doc.getDocumentElement().normalize();
 	
-			NodeList goalList = doc.getElementsByTagName("goal");
+			NodeList goalList = doc.getElementsByTagName("Root");
 	
 			for (int i = 0; i < goalList.getLength(); i++) {
 	

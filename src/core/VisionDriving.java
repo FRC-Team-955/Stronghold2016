@@ -15,7 +15,7 @@ public class VisionDriving {
 	private double secondTurnAng;
 	private double driveTwoDist;
 	
-	private boolean notStarted = false;
+	private boolean notStarted = true;
 	private int gearStep = 100;
 	private double startAng = 0;
 	
