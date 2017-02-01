@@ -29,9 +29,13 @@ public class VisionDriving {
 	 * Calculates the data for the triangle from the data gotten from vision
 	 */
 	public void setTriangleData() {
-		double trans = vision.vs.getGoal(0).translation;
-		double visionAng = vision.vs.getGoal(0).rotation;
-		double dist = vision.vs.getGoal(0).distance;
+//		double trans = vision.vs.getGoal(0).translation;
+//		double visionAng = vision.vs.getGoal(0).rotation;
+//		double dist = vision.vs.getGoal(0).distance;
+		
+		double trans = 18;
+		double visionAng = 30;
+		double dist = 36;
 		
 		double vertDist = Math.sqrt((dist*dist) - (trans*trans));
 		double wantAngDiff = Math.atan(vertDist/trans) * (GearDrivingConfig.wantDist/vertDist);

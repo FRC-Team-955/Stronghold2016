@@ -12,7 +12,6 @@ import config.VisionConfig;
 
 public class SocketCore implements Runnable {
 	public Socket visionSocket;
-	public ServerSocket visionServer;
 	Socket clientSocket;
 	PrintWriter out;
 	BufferedReader in;
@@ -28,11 +27,16 @@ public class SocketCore implements Runnable {
 	public void run() {
 		if(!init){
 			try {
-				visionServer = new ServerSocket(VisionConfig.port);
-				clientSocket = visionServer.accept();
-				init=true;
-				out = new PrintWriter(clientSocket.getOutputStream(), true);
-				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				System.out.println("starting init");
+				visionSocket = new Socket(config.VisionConfig.hostName, config.VisionConfig.port);
+				System.out.println("socket created");
+				out = new PrintWriter(visionSocket.getOutputStream(), true);
+				System.out.println("out created");
+				in = new BufferedReader(new InputStreamReader(visionSocket.getInputStream()));	
+				System.out.println("in created.connected");
+				out.println("connected");
+			
+				init = true;
 				System.out.println("connected");
 			} catch(Exception e) {
 				System.out.println("visionServer initialization threw exception");
@@ -42,84 +46,25 @@ public class SocketCore implements Runnable {
 		try {
 			while(true) {
 				out.println(Integer.toString(updateNumber));
-				xml = in.readLine();
-				System.out.println(xml);
+				try {
+					String input = in.readLine();
+					xml = input;						
+					//String test = in.readLine();					
+				} catch (Exception e) {
+					//System.out.println("not a double");
+				}
+				//System.out.println(test);
+				//System.out.println(distance);
 				updateNumber++;
-				Thread.sleep(50);
+				//Thread.sleep(50);
 			} 
 		} catch(Exception e) {
-			
+			System.out.println("Vision updating threw exception");
 		}
 		init = true;
 	}
 	
 	public String getXML(){
 		return xml;
-	}
-	
-	public void setInit(boolean init) {
-		this.init = init;
-	}
-	
-	public boolean getSocketStatus() {
-		try {
-			return lostConnection ? lostConnection : visionSocket.isConnected();			
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
-	public void initClient() {
-		try {
-			visionSocket = new Socket(VisionConfig.hostName, VisionConfig.port);
-			out = new PrintWriter(visionSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(visionSocket.getInputStream()));	
-			out.println("connected");
-			
-		} catch(UnknownHostException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void initServer() {
-		try {
-			visionServer = new ServerSocket(VisionConfig.port);
-			Socket clientSocket = visionServer.accept();
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-		    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		} catch(Exception e) {
-			
-		}
-	}
-	
-	public void connectServer () {
-		try {
-			visionServer.close();
-			visionServer = new ServerSocket(VisionConfig.port);
-			Socket clientSocket = visionServer.accept();
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-		    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		} catch(Exception e) {
-			
-		}
-	}
-	
-	public void update() {
-		try{
-			out.println(Integer.toString(updateNumber));
-			xml = in.readLine();
-			updateNumber++;
-		} catch (IOException e) {
-			lostConnection = true;
-			System.out.println("ioexception");
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("exception");
-		}
 	}
 }

@@ -41,9 +41,7 @@ public class Goal {
 	public void update(Element n)	{
 		if(Double.parseDouble(n.getAttribute("distance")) != 0) {
 			isGoal = true;
-		}
-		
-		else {
+		} else {
 			isGoal = false;
 		}
 		
@@ -57,9 +55,7 @@ public class Goal {
 				timer.stop();
 				timer.reset();
 			}
-		}
-		
-		else {
+		} else {
 			try {
 				translation = Double.parseDouble(n.getAttribute("translation"));
 				rotation = Double.parseDouble(n.getAttribute("rotation"));
@@ -83,39 +79,6 @@ public class Goal {
 		
 		if(timer.get() > VisionConfig.noGoalTime) {
 			resetValues();
-		}
-	}
-	
-	public void update(double[] values) {
-		if(values[2] !=0) {
-			isGoal = true;
-		}
-		
-		else {
-			isGoal = false;
-		}
-		
-		if(!isGoal) {
-			if(isFirst) {
-				timer.start();
-				isFirst = false;
-			}
-			if(timer.get() > VisionConfig.noGoalTime) {
-				resetValues();
-				timer.stop();
-				timer.reset();
-			}
-		}
-		
-		else {
-			translation = values[0];
-			rotation = values[1];
-			distance = values[2];
-			area = values[3];
-			isGoal = false;
-			isFirst = true;
-			timer.stop();
-			timer.reset();
 		}
 	}
 	
