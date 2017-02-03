@@ -42,4 +42,8 @@ public class DriveConfig {
 	public static final double angChangeThreshold = 300;
 	public static final double notMovingThreshold = 0.3;
 	public static final double turnNextTime = 0.5;
+	
+	public static final double kP = 0.1;
+	public static final double kI = 0;
+	public static final double kD = 0;
 }

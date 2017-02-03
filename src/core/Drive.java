@@ -24,7 +24,7 @@ public class Drive {
 	private Encoder encRight;
 	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
-//	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
+	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
 	boolean lowGear = true;
 	boolean reverseMode = false;
 	
@@ -32,6 +32,12 @@ public class Drive {
 	double yPos;
 	double x;
 	double y;
+	
+	double wantLeftRate = 0;
+	double wantRightRate = 0;
+	
+	double leftRate = 0;
+	double rightRate = 0;
 	
 	// Turning
 	private boolean isFirst = true;
@@ -47,6 +53,21 @@ public class Drive {
 		robotCore = core;
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
+	}
+	
+	public void update() {
+		drivePID.update(robotCore.driveEncLeft.getRate(), wantLeftRate);
+		leftRate += drivePID.getOutput();
+		leftCimGroup.set(leftRate);
+		
+		drivePID.update(robotCore.driveEncRight.getRate(), wantRightRate);
+		rightRate += drivePID.getOutput();
+		rightCimGroup.set(rightRate);
+	}
+	
+	public void setWantRate(double left, double right) {
+		wantLeftRate = left;
+		wantRightRate = right;
 	}
 	
 	/**

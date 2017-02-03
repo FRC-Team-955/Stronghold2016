@@ -1,6 +1,7 @@
 package core;
 
 import config.*;
+import sensors.MyJoystick;
 import util.Dashboard;
 import vision.VisionCore;
 
@@ -15,6 +16,7 @@ public class Teleop {
 	private Dashboard dashboard;
 	private VisionCore vision;
 	private VisionDriving visionDriving;
+	private MyJoystick joy;
 	
 	/**
 	 * Creates standard teleop object
@@ -30,6 +32,7 @@ public class Teleop {
 		this.vision = vision;
 		this.visionDriving = visionDriving;
 		
+		joy = new MyJoystick(0);
 //		this.climber = climber;
 	}
 		
@@ -46,8 +49,11 @@ public class Teleop {
 	 * Runs drive code 
 	 */
 	private void joyDrive() {
-		visionDriving.driveToGear();
-		dashboard.putDouble("leftEnc", robotCore.driveEncLeft.getDistance());
+		if(joy.getButton(0)) {
+			visionDriving.driveToGear();	
+		}
+		drive.update();
+		visionDriving.update();
 
 		//drive.turnStep(1, 180);
 		

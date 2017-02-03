@@ -1,6 +1,9 @@
 package core;
 
+import java.util.Timer;
+
 import config.GearDrivingConfig;
+import config.PathConfig;
 import util.PathPlanner;
 import vision.VisionCore;
 
@@ -19,11 +22,16 @@ public class VisionDriving {
 	private boolean notStarted = true;
 	private int gearStep = 100;
 	private double startAng = 0;
+	private Timer scheduler;
+	private double[][] leftRightVelocity;
+	private PathFollower follower;
+	private boolean following = false;
 	
 	public VisionDriving (VisionCore vision, Drive drive, RobotCore robotCore) {
 		this.vision = vision;
 		this.drive = drive;
 		this.robotCore = robotCore;
+		scheduler = new Timer();
 	}
 	
 	/**
@@ -59,10 +67,25 @@ public class VisionDriving {
 		notStarted = true;
 	}
 	
+	public void update() {
+		if(following) {
+			if(follower.getStep() > leftRightVelocity.length) {
+				scheduler.cancel();
+				following = false;
+			}
+		}
+	}
+	
 	public void driveToGear() {
 		double[][] waypoints = {
-				{0,0}
+			{6,0},
+			{6,1},
+			{3,10},
+			{1,12}
 		};
-		PathPlanner.generateSpline(waypoints);
+		leftRightVelocity = PathPlanner.generateSpline(waypoints);
+		follower = new PathFollower(drive, leftRightVelocity);
+		scheduler.schedule(follower, 0L, (long) (PathConfig.timeStep * 1000));
+		following = true;
 	}
 }
