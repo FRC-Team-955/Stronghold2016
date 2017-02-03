@@ -1,7 +1,6 @@
 package components;
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.Talon;
 import config.CimConfig;
 
 /**
@@ -31,8 +30,7 @@ public class CIM extends CANTalon {
 			super.set(-speed);
 		
 		else
-			super.set(speed);
-			
+			super.set(speed);			
 	}
 	
 	/**

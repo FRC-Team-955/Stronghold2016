@@ -78,10 +78,10 @@ public class VisionDriving {
 	
 	public void driveToGear() {
 		double[][] waypoints = {
-			{6,0},
-			{6,1},
-			{3,10},
-			{1,12}
+			{2,0},
+			{2,1},
+			{6,8},
+			{6,10}
 		};
 		leftRightVelocity = PathPlanner.generateSpline(waypoints);
 		follower = new PathFollower(drive, leftRightVelocity);

@@ -36,9 +36,6 @@ public class Dashboard {
 		SmartDashboard.putString("Goal Three", vision.vs.goals[2].toString());
 		SmartDashboard.putString("xml", vision.socket.getXML());
 		SmartDashboard.putNumber("pitch", robotCore.navX.getRoll());
-		
-		SmartDashboard.putNumber("driveEncLeft", robotCore.driveEncLeft.getDistance());
-		SmartDashboard.putNumber("driveEncRight", robotCore.driveEncRight.getDistance());
 	}
 	
 	public void putDouble(String key, double num) {

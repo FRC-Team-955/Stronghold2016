@@ -7,12 +7,12 @@ package config;
  */
 public class DriveConfig {
 	// Channels for left talons
-	public static final int leftC1Chn = 3;
-	public static final int leftC2Chn = 4;
+	public static final int leftC1Chn = 7;
+	public static final int leftC2Chn = 5;
 	
 	// Channels for right talons
-	public static final int rightC1Chn = 1;
-	public static final int rightC2Chn = 2;
+	public static final int rightC1Chn = 3;
+	public static final int rightC2Chn = 4;
 	
 	public static final boolean leftC1IsFliped = true;
 	public static final boolean leftC2IsFlipped = true;
@@ -43,7 +43,5 @@ public class DriveConfig {
 	public static final double notMovingThreshold = 0.3;
 	public static final double turnNextTime = 0.5;
 	
-	public static final double kP = 0.1;
-	public static final double kI = 0;
-	public static final double kD = 0;
+	public static final double ticksPerFoot = 2.03718327;
 }

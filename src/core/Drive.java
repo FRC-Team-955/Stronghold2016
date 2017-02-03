@@ -2,10 +2,14 @@ package core;
 
 import components.TwoCimGroup;
 import config.DriveConfig;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+import util.Dashboard;
 import util.PID;
 import util.Util;
 
@@ -24,9 +28,9 @@ public class Drive {
 	private Encoder encRight;
 	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
-	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
 	boolean lowGear = true;
 	boolean reverseMode = false;
+	Dashboard dash;
 	
 	double xPos;
 	double yPos;
@@ -35,9 +39,6 @@ public class Drive {
 	
 	double wantLeftRate = 0;
 	double wantRightRate = 0;
-	
-	double leftRate = 0;
-	double rightRate = 0;
 	
 	// Turning
 	private boolean isFirst = true;
@@ -49,25 +50,43 @@ public class Drive {
 	// Driving straight PID
 	private boolean isFirstDrive = true;
 	
-	public Drive (RobotCore core) {
+	public Drive (RobotCore core, Dashboard dash) {
+		this.dash = dash;
 		robotCore = core;
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
+
+		leftCimGroup.c1.changeControlMode(TalonControlMode.Speed);
+		leftCimGroup.c2.changeControlMode(TalonControlMode.Follower);
+		leftCimGroup.c2.set(DriveConfig.leftC1Chn);
+
+		rightCimGroup.c1.changeControlMode(TalonControlMode.Speed);
+		rightCimGroup.c2.changeControlMode(TalonControlMode.Follower);
+		rightCimGroup.c2.set(DriveConfig.rightC1Chn);
+		
+		leftCimGroup.c1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		rightCimGroup.c1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		
+		leftCimGroup.c1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
+		rightCimGroup.c1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
+		
+		leftCimGroup.c1.enableControl();
+		rightCimGroup.c1.enableControl();
+		
+		leftCimGroup.c1.set(0);
+		rightCimGroup.c1.set(0);
 	}
 	
 	public void update() {
-		drivePID.update(robotCore.driveEncLeft.getRate(), wantLeftRate);
-		leftRate += drivePID.getOutput();
-		leftCimGroup.set(leftRate);
-		
-		drivePID.update(robotCore.driveEncRight.getRate(), wantRightRate);
-		rightRate += drivePID.getOutput();
-		rightCimGroup.set(rightRate);
+		leftCimGroup.c1.set(wantLeftRate);
+		rightCimGroup.c1.set(wantRightRate);
+		dash.putDouble("leftEncVelocity", leftCimGroup.c1.getEncVelocity());
+		dash.putDouble("rightEncVelocity", rightCimGroup.c1.getEncVelocity());
 	}
 	
 	public void setWantRate(double left, double right) {
-		wantLeftRate = left;
-		wantRightRate = right;
+		wantLeftRate = left * DriveConfig.ticksPerFoot;
+		wantRightRate = right * DriveConfig.ticksPerFoot;
 	}
 	
 	/**
