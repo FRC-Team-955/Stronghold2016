@@ -1,6 +1,7 @@
 package core;
 
 import config.GearDrivingConfig;
+import util.PathPlanner;
 import vision.VisionCore;
 
 public class VisionDriving {
@@ -59,50 +60,9 @@ public class VisionDriving {
 	}
 	
 	public void driveToGear() {
-		if(notStarted) {
-			gearStep = 0;
-			startAng = robotCore.navX.getAngle();
-			setTriangleData();
-			notStarted = false;
-		} 
-		
-		switch(gearStep) {
-		case 0: 
-			double wantAngOne = angChange+startAng;
-			if(wantAngOne > 180) {
-				wantAngOne -= 360;
-			} else if(wantAngOne < -180) {
-				wantAngOne +=360;
-			}
-			if(drive.turnStep(GearDrivingConfig.turnSpeed, wantAngOne)) {
-				gearStep++;
-			}
-			break;
-		case 1:
-			if(drive.driveDistance(GearDrivingConfig.driveSpeed, driveOneDist)) {
-				gearStep++;
-				startAng = robotCore.navX.getAngle();
-			}
-			break;
-		case 2:
-			double wantAngTwo = secondTurnAng+startAng;
-			if(wantAngTwo > 180) {
-				wantAngTwo -= 360;
-			} else if(wantAngTwo < -180) {
-				wantAngTwo +=360;
-			}
-			if(drive.turnStep(GearDrivingConfig.turnSpeed, wantAngTwo)) {
-				gearStep++;
-			}
-			break;
-		case 3:
-			if(drive.driveDistance(GearDrivingConfig.driveSpeed, driveTwoDist)) {
-				gearStep++;
-			}
-			break;
-		default:
-			break;
-		}
-		
+		double[][] waypoints = {
+				{0,0}
+		};
+		PathPlanner.generateSpline(waypoints);
 	}
 }
