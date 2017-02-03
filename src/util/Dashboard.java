@@ -31,9 +31,6 @@ public class Dashboard {
 	
 	public void update() {
 		SmartDashboard.putNumber("navX Angle", robotCore.navX.getAngle());
-		SmartDashboard.putString("Goal One", vision.vs.goals[0].toString());
-		SmartDashboard.putString("Goal Two", vision.vs.goals[1].toString());
-		SmartDashboard.putString("Goal Three", vision.vs.goals[2].toString());
 		SmartDashboard.putString("xml", vision.socket.getXML());
 		SmartDashboard.putNumber("pitch", robotCore.navX.getRoll());
 	}

@@ -43,5 +43,5 @@ public class DriveConfig {
 	public static final double notMovingThreshold = 0.3;
 	public static final double turnNextTime = 0.5;
 	
-	public static final double ticksPerFoot = 2.03718327;
+	public static final double ticksPerFoot = 4000;
 }

@@ -17,6 +17,7 @@ public class Teleop {
 	private VisionCore vision;
 	private VisionDriving visionDriving;
 	private MyJoystick joy;
+	private boolean isFirst = true;
 	
 	/**
 	 * Creates standard teleop object
@@ -49,9 +50,14 @@ public class Teleop {
 	 * Runs drive code 
 	 */
 	private void joyDrive() {
-		if(joy.getButton(0)) {
-			visionDriving.driveToGear();	
+		//if(joy.getButton(1)) {
+		//	visionDriving.driveToGear();	
+		//}
+		if(isFirst) {
+			visionDriving.driveToGear();
+			isFirst = false;
 		}
+		
 		drive.update();
 		visionDriving.update();
 

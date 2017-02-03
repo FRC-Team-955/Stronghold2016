@@ -16,10 +16,10 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 public class Robot extends IterativeRobot {
 	RobotCore robotCore = new RobotCore();
 	
-	Drive drive = new Drive(robotCore); 
-	
 	VisionCore vision = new VisionCore(robotCore);
 	Dashboard dashboard = new Dashboard(vision, robotCore);
+	Drive drive = new Drive(robotCore, dashboard); 
+	
 	VisionDriving visionDriving = new VisionDriving(vision, drive, robotCore);
 	Teleop teleop = new Teleop(robotCore, drive, dashboard, vision, visionDriving);
 	int value = 0;

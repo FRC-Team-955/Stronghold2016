@@ -70,8 +70,8 @@ public class Drive {
 		leftCimGroup.c1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
 		rightCimGroup.c1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
 		
-		leftCimGroup.c1.enableControl();
-		rightCimGroup.c1.enableControl();
+		//leftCimGroup.c1.enableControl();
+		//rightCimGroup.c1.enableControl();
 		
 		leftCimGroup.c1.set(0);
 		rightCimGroup.c1.set(0);
@@ -82,6 +82,10 @@ public class Drive {
 		rightCimGroup.c1.set(wantRightRate);
 		dash.putDouble("leftEncVelocity", leftCimGroup.c1.getEncVelocity());
 		dash.putDouble("rightEncVelocity", rightCimGroup.c1.getEncVelocity());
+		dash.putDouble("leftEncDist", leftCimGroup.c1.getEncPosition());
+		dash.putDouble("rightEncDist", rightCimGroup.c1.getEncPosition());
+		dash.putDouble("wantLeftRate", wantLeftRate);
+		dash.putDouble("wantRightRate", wantLeftRate);
 	}
 	
 	public void setWantRate(double left, double right) {
