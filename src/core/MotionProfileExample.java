@@ -47,6 +47,9 @@ public class MotionProfileExample {
 	 * State machine to make sure we let enough of the motion profile stream to
 	 * talon before we fire it.
 	 */
+	private boolean started = false;
+	
+	private int numPoints = -1;
 	private int _state = 0;
 	/**
 	 * Any time you have a state machine that waits for external events, its a
@@ -80,7 +83,7 @@ public class MotionProfileExample {
 	 */
 	private static final int kNumLoopsTimeout = 10;
 	
-	private double[] velocityPoints;
+	private double[] velocityPoints = {};
 	
 	/**
 	 * Lets create a periodic task to funnel our trajectory points into our talon.
@@ -111,8 +114,8 @@ public class MotionProfileExample {
 		 * since our MP is 10ms per point, set the control frame rate and the
 		 * notifer to half that
 		 */
-		_talon.changeMotionControlFramePeriod(3);
-		_notifer.startPeriodic(0.003);
+		_talon.changeMotionControlFramePeriod(25);
+		_notifer.startPeriodic(0.025);
 	}
 
 	/**
@@ -184,6 +187,7 @@ public class MotionProfileExample {
 			switch (_state) {
 				case 0: /* wait for application to tell us to start an MP */
 					if (_bStart) {
+						started = true;
 						_bStart = false;
 	
 						_setValue = CANTalon.SetValueMotionProfile.Disable;
@@ -239,9 +243,10 @@ public class MotionProfileExample {
 	/** Start filling the MPs to all of the involved Talons. */
 	private void startFilling(double[] velocity) {
 		/* since this example only has one talon, just update that one */
+		numPoints = velocity.length;
 		startFilling(velocity, velocity.length);
 	}
-
+	
 	private void startFilling(double[] profile, int totalCnt) {
 
 		/* create an empty point */
@@ -261,13 +266,17 @@ public class MotionProfileExample {
 		 * points in memory, clear it.
 		 */
 		_talon.clearMotionProfileTrajectories();
-
+		double position = 0;
+		
 		/* This is fast since it's just into our TOP buffer */
 		for (int i = 0; i < totalCnt; ++i) {
 			/* for each point, fill our structure and pass it to API */
-			point.velocityOnly = true;
-			point.velocity = profile[i];
-			point.timeDurMs = (int) PathConfig.timeStep;
+			point.velocityOnly = false;
+			point.velocity = profile[i]/10;
+			point.position = position + (point.velocity * PathConfig.timeStep * 1000);
+			position = point.position;
+			
+			point.timeDurMs = (int) PathConfig.timeStep * 1000;
 			point.profileSlotSelect = 0; /* which set of gains would you like to use? */
 			point.zeroPos = false;
 			if (i == 0)
@@ -280,7 +289,7 @@ public class MotionProfileExample {
 			_talon.pushMotionProfileTrajectory(point);
 		}
 	}
-
+	
 	/**
 	 * Called by application to signal Talon to start the buffered MP (when it's
 	 * able to).
@@ -289,6 +298,18 @@ public class MotionProfileExample {
 		_bStart = true;
 	}
 
+	public int getState() {
+		return _state;
+	}
+	
+	public boolean getStarted() {
+		return started;
+	}
+	
+	public int getNumPoints() {
+		return numPoints;
+	}
+	
 	/**
 	 * 
 	 * @return the output value to pass to Talon's set() routine. 0 for disable

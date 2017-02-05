@@ -1,6 +1,7 @@
 package core;
 
 import config.*;
+import edu.wpi.first.wpilibj.Timer;
 import sensors.MyJoystick;
 import util.Dashboard;
 import vision.VisionCore;
@@ -18,7 +19,8 @@ public class Teleop {
 	private VisionDriving visionDriving;
 	private MyJoystick joy;
 	private boolean isFirst = true;
-	
+	private Timer timer = new Timer();
+	private boolean update = false;
 	/**
 	 * Creates standard teleop object
 	 * 
@@ -37,6 +39,12 @@ public class Teleop {
 //		this.climber = climber;
 	}
 		
+	public void init() {
+		timer.reset();
+		timer.start();
+		update = false;
+	}
+	
 	/**
 	 * Periodic functionality including drive
 	 */
@@ -53,15 +61,25 @@ public class Teleop {
 		//if(joy.getButton(1)) {
 		//	visionDriving.driveToGear();	
 		//}
-		if(isFirst) {
+		if(isFirst && timer.get() > 3) {
 			//visionDriving.driveToGear();
 			drive.setVelocityPoints();
 			isFirst = false;
 		}
 		
-		drive.update();
+		if(timer.get() > 6) {
+			update = true;
+		}
 		
-		if(joy.getButton(2)) {
+		if(update) {
+			drive.update();
+		}
+		
+		dashboard.putDouble("timer", timer.get());
+		
+		if(timer.get() > 10) {
+			timer.reset();
+			timer.stop();
 			drive.startMotionProfile();
 		}
 		//visionDriving.update();

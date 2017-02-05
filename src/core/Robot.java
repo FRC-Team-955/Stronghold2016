@@ -53,6 +53,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
 //    	vision.socket.connectServer();
 //    	vision.initThread();
+    	teleop.init();
     }
     
     /**

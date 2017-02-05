@@ -87,11 +87,11 @@ public class Drive {
 		lc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive, DriveConfig.kFDrive, 0, 0.2, 0);
 		rc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive, DriveConfig.kFDrive, 0, 0.2, 0);
 		
-		lc1.enableControl();
-		rc1.enableControl();
+		lc1.setProfile(0);
+		rc1.setProfile(0);
 		
-		lc1.set(0);
-		rc1.set(0);
+		lc1.configEncoderCodesPerRev(4000);
+		rc1.configEncoderCodesPerRev(4000);
 	}
 	
 	public void startMotionProfile() {
@@ -102,8 +102,8 @@ public class Drive {
 		double[][] waypoints = {
 				{0,0},
 				{0,1.5},
-				{-1.5,3.5},
-				{-1.5,7}
+				{1.5,3.5},
+				{1.5,7}
 		};
 		
 		double[][] leftRight = PathPlanner.generateSpline(waypoints);
@@ -115,20 +115,14 @@ public class Drive {
 		}
 		this.leftVelocity = leftVelocity;
 		this.rightVelocity = rightVelocity;
-	}
-	
-	public void update() {
-		//lc1.set(wantLeftRate);
-		//rc1.set(wantRightRate);
-
-		leftExample.control();
-		rightExample.control();
 		
 		leftExample.setVelocityPoints(leftVelocity);
 		leftExample.setVelocityPoints(rightVelocity);
-		
-		lc1.changeControlMode(TalonControlMode.MotionProfile);
-		rc1.changeControlMode(TalonControlMode.MotionProfile);
+	}
+	
+	public void update() {
+		leftExample.control();
+		rightExample.control();
 		
 		CANTalon.SetValueMotionProfile leftSetOutput = leftExample.getSetValue();
 		CANTalon.SetValueMotionProfile rightSetOutput = rightExample.getSetValue();
@@ -136,6 +130,14 @@ public class Drive {
 		lc1.set(leftSetOutput.value);
 		rc1.set(rightSetOutput.value);
 
+		dash.putDouble("leftSet", leftSetOutput.value);
+		dash.putDouble("leftState", leftExample.getState());
+		dash.putBoolean("leftStarted", leftExample.getStarted());
+		dash.putDouble("leftNumPoints", leftExample.getNumPoints());
+		
+		dash.putDouble("leftEnc", lc1.getSpeed());
+		dash.putDouble("rightEnc", rc1.getSpeed());
+		
 		/* if btn is pressed and was not pressed last time,
 		 * In other words we just detected the on-press event.
 		 * This will signal the robot to start a MP */
