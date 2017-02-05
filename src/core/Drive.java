@@ -26,8 +26,14 @@ public class Drive {
 	private RobotCore robotCore;
 	private Encoder encLeft;
 	private Encoder encRight;
-	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
-	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
+	//public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
+	//public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
+	
+	CANTalon lc1 = new CANTalon(DriveConfig.leftC1Chn);
+	CANTalon lc2 = new CANTalon(DriveConfig.leftC2Chn);
+	CANTalon rc1 = new CANTalon(DriveConfig.rightC1Chn);
+	CANTalon rc2 = new CANTalon(DriveConfig.rightC2Chn);
+	
 	boolean lowGear = true;
 	boolean reverseMode = false;
 	Dashboard dash;
@@ -56,41 +62,44 @@ public class Drive {
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
 
-		leftCimGroup.c1.changeControlMode(TalonControlMode.Speed);
-		leftCimGroup.c2.changeControlMode(TalonControlMode.Follower);
-		leftCimGroup.c2.set(DriveConfig.leftC1Chn);
-
-		rightCimGroup.c1.changeControlMode(TalonControlMode.Speed);
-		rightCimGroup.c2.changeControlMode(TalonControlMode.Follower);
-		rightCimGroup.c2.set(DriveConfig.rightC1Chn);
+		rc1.changeControlMode(TalonControlMode.Position);
+		rc2.changeControlMode(TalonControlMode.Follower);
+		rc2.set(DriveConfig.rightC1Chn);
 		
-		leftCimGroup.c1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		rightCimGroup.c1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		lc1.changeControlMode(TalonControlMode.Position);
+		lc2.changeControlMode(TalonControlMode.Follower);
+		lc2.set(DriveConfig.leftC1Chn);
 		
-		leftCimGroup.c1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
-		rightCimGroup.c1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
+		lc1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		rc1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
-		//leftCimGroup.c1.enableControl();
-		//rightCimGroup.c1.enableControl();
+		lc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
+		rc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
 		
-		leftCimGroup.c1.set(0);
-		rightCimGroup.c1.set(0);
+		lc1.enableControl();
+		rc1.enableControl();
+		
+		lc1.set(0);
+		rc1.set(0);
 	}
 	
 	public void update() {
-		leftCimGroup.c1.set(wantLeftRate);
-		rightCimGroup.c1.set(wantRightRate);
-		dash.putDouble("leftEncVelocity", leftCimGroup.c1.getEncVelocity());
-		dash.putDouble("rightEncVelocity", rightCimGroup.c1.getEncVelocity());
-		dash.putDouble("leftEncDist", leftCimGroup.c1.getEncPosition());
-		dash.putDouble("rightEncDist", rightCimGroup.c1.getEncPosition());
+		//lc1.set(wantLeftRate);
+		//rc1.set(wantRightRate);
+		dash.putDouble("leftEncVelocity", lc1.getEncVelocity());
+		dash.putDouble("rightEncVelocity", rc1.getEncVelocity());
+		dash.putDouble("leftEncDist", lc1.getEncPosition());
+		dash.putDouble("rightEncDist", rc1.getEncPosition());
 		dash.putDouble("wantLeftRate", wantLeftRate);
-		dash.putDouble("wantRightRate", wantLeftRate);
+		dash.putDouble("wantRightRate", wantRightRate);
 	}
 	
 	public void setWantRate(double left, double right) {
-		wantLeftRate = left * DriveConfig.ticksPerFoot;
-		wantRightRate = right * DriveConfig.ticksPerFoot;
+		//wantLeftRate = -left * DriveConfig.ticksPerFoot;
+		//wantRightRate = right * DriveConfig.ticksPerFoot;
+		
+		lc1.set(left * DriveConfig.ticksPerFoot);
+		rc1.set(right * DriveConfig.ticksPerFoot);
 	}
 	
 	/**
@@ -125,8 +134,8 @@ public class Drive {
 		double left = y + x;
 		double right = y - x;
 //		System.out.println("left : " + left + "\tright : " + right);
-        leftCimGroup.set(left* .7);
-        rightCimGroup.set(right * .7);
+        //leftCimGroup.set(left* .7);
+        //rightCimGroup.set(right * .7);
         
 //        System.out.println("Drive Encoder Left: " + encLeft.getDistance() + "\tDrive Encoder Right: " + encRight.getDistance());
 	}
@@ -145,18 +154,18 @@ public class Drive {
         double left = y + x;
         double right = y - x;
         
-        leftCimGroup.setNoRamp(left);
-        rightCimGroup.setNoRamp(right);
+        //leftCimGroup.setNoRamp(left);
+        //rightCimGroup.setNoRamp(right);
 	}
 	
 	public void set(double left, double right) {
-		leftCimGroup.set(left);
-		rightCimGroup.set(right);
+		//leftCimGroup.set(left);
+		//rightCimGroup.set(right);
 	}
 	
 	public void setNoRamp(double left, double right) {
-		leftCimGroup.setNoRamp(left);
-		rightCimGroup.setNoRamp(right);
+		//leftCimGroup.setNoRamp(left);
+		//rightCimGroup.setNoRamp(right);
 	}
 	
 	public void setReverseMode(boolean mode) {

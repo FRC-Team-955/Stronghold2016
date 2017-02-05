@@ -54,12 +54,13 @@ public class Teleop {
 		//	visionDriving.driveToGear();	
 		//}
 		if(isFirst) {
-			visionDriving.driveToGear();
+			//visionDriving.driveToGear();
+			drive.setWantRate(15, 15);
 			isFirst = false;
 		}
 		
 		drive.update();
-		visionDriving.update();
+		//visionDriving.update();
 
 		//drive.turnStep(1, 180);
 		
