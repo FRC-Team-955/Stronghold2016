@@ -55,11 +55,15 @@ public class Teleop {
 		//}
 		if(isFirst) {
 			//visionDriving.driveToGear();
-			drive.setWantRate(15, 15);
+			drive.setVelocityPoints();
 			isFirst = false;
 		}
 		
 		drive.update();
+		
+		if(joy.getButton(2)) {
+			drive.startMotionProfile();
+		}
 		//visionDriving.update();
 
 		//drive.turnStep(1, 180);

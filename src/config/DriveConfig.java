@@ -38,6 +38,7 @@ public class DriveConfig {
 	public static final double kPDrive = 0.062;
 	public static final double kIDrive= 0;
 	public static final double kDDrive = 0;
+	public static final double kFDrive = 0.1;
 	
 	public static final double angChangeThreshold = 300;
 	public static final double notMovingThreshold = 0.3;

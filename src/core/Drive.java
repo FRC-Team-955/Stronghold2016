@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import util.Dashboard;
 import util.PID;
+import util.PathPlanner;
 import util.Util;
 
 import java.lang.Math;
@@ -53,6 +54,14 @@ public class Drive {
 	private Timer timer = new Timer();
 	private double prevAng = 0;
 	
+	private boolean start = false;
+	
+	MotionProfileExample leftExample = new MotionProfileExample(lc1);
+	MotionProfileExample rightExample = new MotionProfileExample(rc1);
+	
+	double[] leftVelocity = {};
+	double[] rightVelocity = {};
+	
 	// Driving straight PID
 	private boolean isFirstDrive = true;
 	
@@ -62,19 +71,21 @@ public class Drive {
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
 
-		rc1.changeControlMode(TalonControlMode.Position);
+		rc1.changeControlMode(TalonControlMode.MotionProfile);
 		rc2.changeControlMode(TalonControlMode.Follower);
 		rc2.set(DriveConfig.rightC1Chn);
 		
-		lc1.changeControlMode(TalonControlMode.Position);
+		lc1.changeControlMode(TalonControlMode.MotionProfile);
 		lc2.changeControlMode(TalonControlMode.Follower);
 		lc2.set(DriveConfig.leftC1Chn);
 		
 		lc1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		rc1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		lc1.reverseSensor(true);
+		rc1.reverseSensor(false);
 		
-		lc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
-		rc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive);
+		lc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive, DriveConfig.kFDrive, 0, 0.2, 0);
+		rc1.setPID(DriveConfig.kPDrive, DriveConfig.kIDrive, DriveConfig.kDDrive, DriveConfig.kFDrive, 0, 0.2, 0);
 		
 		lc1.enableControl();
 		rc1.enableControl();
@@ -83,9 +94,58 @@ public class Drive {
 		rc1.set(0);
 	}
 	
+	public void startMotionProfile() {
+		start = true;
+	}
+	
+	public void setVelocityPoints() {
+		double[][] waypoints = {
+				{0,0},
+				{0,1.5},
+				{-1.5,3.5},
+				{-1.5,7}
+		};
+		
+		double[][] leftRight = PathPlanner.generateSpline(waypoints);
+		double[] leftVelocity = new double[leftRight.length];
+		double[] rightVelocity = new double[leftRight.length];
+		for(int i = 0; i < leftRight.length; i++) {
+			leftVelocity[i] = leftRight[i][0];
+			rightVelocity[i] = leftRight[i][1];
+		}
+		this.leftVelocity = leftVelocity;
+		this.rightVelocity = rightVelocity;
+	}
+	
 	public void update() {
 		//lc1.set(wantLeftRate);
 		//rc1.set(wantRightRate);
+
+		leftExample.control();
+		rightExample.control();
+		
+		leftExample.setVelocityPoints(leftVelocity);
+		leftExample.setVelocityPoints(rightVelocity);
+		
+		lc1.changeControlMode(TalonControlMode.MotionProfile);
+		rc1.changeControlMode(TalonControlMode.MotionProfile);
+		
+		CANTalon.SetValueMotionProfile leftSetOutput = leftExample.getSetValue();
+		CANTalon.SetValueMotionProfile rightSetOutput = rightExample.getSetValue();
+				
+		lc1.set(leftSetOutput.value);
+		rc1.set(rightSetOutput.value);
+
+		/* if btn is pressed and was not pressed last time,
+		 * In other words we just detected the on-press event.
+		 * This will signal the robot to start a MP */
+		if(start) {
+			start = false;
+			/* user just tapped button 6 */
+			leftExample.startMotionProfile();
+			rightExample.startMotionProfile();
+		}
+		
 		dash.putDouble("leftEncVelocity", lc1.getEncVelocity());
 		dash.putDouble("rightEncVelocity", rc1.getEncVelocity());
 		dash.putDouble("leftEncDist", lc1.getEncPosition());
