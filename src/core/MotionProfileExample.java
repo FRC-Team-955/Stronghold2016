@@ -114,8 +114,8 @@ public class MotionProfileExample {
 		 * since our MP is 10ms per point, set the control frame rate and the
 		 * notifer to half that
 		 */
-		_talon.changeMotionControlFramePeriod(25);
-		_notifer.startPeriodic(0.025);
+		_talon.changeMotionControlFramePeriod(5);
+		_notifer.startPeriodic(0.005);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class MotionProfileExample {
 						_bStart = false;
 	
 						_setValue = CANTalon.SetValueMotionProfile.Disable;
-						startFilling(velocityPoints);
+						startFilling();
 						/*
 						 * MP is being sent to CAN bus, wait a small amount of time
 						 */
@@ -241,13 +241,12 @@ public class MotionProfileExample {
 	}
 
 	/** Start filling the MPs to all of the involved Talons. */
-	private void startFilling(double[] velocity) {
+	private void startFilling() {
 		/* since this example only has one talon, just update that one */
-		numPoints = velocity.length;
-		startFilling(velocity, velocity.length);
+		startFilling(GeneratedMotionProfile.Points, GeneratedMotionProfile.kNumPoints);
 	}
-	
-	private void startFilling(double[] profile, int totalCnt) {
+
+	private void startFilling(double[][] profile, int totalCnt) {
 
 		/* create an empty point */
 		CANTalon.TrajectoryPoint point = new CANTalon.TrajectoryPoint();
@@ -266,18 +265,17 @@ public class MotionProfileExample {
 		 * points in memory, clear it.
 		 */
 		_talon.clearMotionProfileTrajectories();
-		double position = 0;
-		
+
 		/* This is fast since it's just into our TOP buffer */
 		for (int i = 0; i < totalCnt; ++i) {
 			/* for each point, fill our structure and pass it to API */
-			point.velocityOnly = false;
-			point.velocity = profile[i]/10;
-			point.position = position + (point.velocity * PathConfig.timeStep * 1000);
-			position = point.position;
-			
-			point.timeDurMs = 1000;
+			point.position = profile[i][0];
+			point.velocity = profile[i][1];
+			point.timeDurMs = (int) profile[i][2];
 			point.profileSlotSelect = 0; /* which set of gains would you like to use? */
+			point.velocityOnly = false; /* set true to not do any position
+										 * servo, just velocity feedforward
+										 */
 			point.zeroPos = false;
 			if (i == 0)
 				point.zeroPos = true; /* set this to true on the first point */
@@ -289,6 +287,7 @@ public class MotionProfileExample {
 			_talon.pushMotionProfileTrajectory(point);
 		}
 	}
+
 	
 	/**
 	 * Called by application to signal Talon to start the buffered MP (when it's
