@@ -276,7 +276,7 @@ public class MotionProfileExample {
 			point.position = position + (point.velocity * PathConfig.timeStep * 1000);
 			position = point.position;
 			
-			point.timeDurMs = (int) PathConfig.timeStep * 1000;
+			point.timeDurMs = 1000;
 			point.profileSlotSelect = 0; /* which set of gains would you like to use? */
 			point.zeroPos = false;
 			if (i == 0)

@@ -90,8 +90,8 @@ public class Drive {
 		lc1.setProfile(0);
 		rc1.setProfile(0);
 		
-		lc1.configEncoderCodesPerRev(4000);
-		rc1.configEncoderCodesPerRev(4000);
+		lc1.configEncoderCodesPerRev(40000);
+		rc1.configEncoderCodesPerRev(40000);
 	}
 	
 	public void startMotionProfile() {
@@ -117,7 +117,8 @@ public class Drive {
 		this.rightVelocity = rightVelocity;
 		
 		leftExample.setVelocityPoints(leftVelocity);
-		leftExample.setVelocityPoints(rightVelocity);
+		rightExample.setVelocityPoints(rightVelocity);
+		dash.putDouble("leftVelArray", rightVelocity.length);
 	}
 	
 	public void update() {
@@ -130,10 +131,10 @@ public class Drive {
 		lc1.set(leftSetOutput.value);
 		rc1.set(rightSetOutput.value);
 
-		dash.putDouble("leftSet", leftSetOutput.value);
-		dash.putDouble("leftState", leftExample.getState());
-		dash.putBoolean("leftStarted", leftExample.getStarted());
-		dash.putDouble("leftNumPoints", leftExample.getNumPoints());
+		dash.putDouble("leftSet", rightSetOutput.value);
+		dash.putDouble("leftState", rightExample.getState());
+		dash.putBoolean("leftStarted", rightExample.getStarted());
+		dash.putDouble("leftNumPoints", rightExample.getNumPoints());
 		
 		dash.putDouble("leftEnc", lc1.getSpeed());
 		dash.putDouble("rightEnc", rc1.getSpeed());
@@ -160,8 +161,8 @@ public class Drive {
 		//wantLeftRate = -left * DriveConfig.ticksPerFoot;
 		//wantRightRate = right * DriveConfig.ticksPerFoot;
 		
-		lc1.set(left * DriveConfig.ticksPerFoot);
-		rc1.set(right * DriveConfig.ticksPerFoot);
+		//lc1.set(left * DriveConfig.ticksPerFoot);
+		//rc1.set(right * DriveConfig.ticksPerFoot);
 	}
 	
 	/**
